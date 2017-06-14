@@ -104,9 +104,8 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 				$payment->set_gateway_response( __( 'Transaction failed: Something went wrong', 'event_espresso' ) );
 			}
 		}
-		echo "<pre>";
-		print_r($payment);
-		exit;
+		
+		return $payment;		
 		
 	}
 
