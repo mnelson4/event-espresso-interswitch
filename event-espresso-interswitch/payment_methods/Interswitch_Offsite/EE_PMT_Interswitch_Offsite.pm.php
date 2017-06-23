@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('EVENT_ESPRESSO_VERSION')) {
 	exit('No direct script access allowed');
 }
@@ -18,12 +19,12 @@ class EE_PMT_Interswitch_Offsite extends EE_PMT_Base{
 	/**
 	 *
 	 * @param EE_Payment_Method $pm_instance
-	 * @return EE_PMT_interswitch_Offsite
+	 * @return EE_PMT_New_Payment_Method_Offsite
 	 */
 	public function __construct($pm_instance = NULL) {
 		require_once($this->file_folder().'EEG_Interswitch_Offsite.gateway.php');
 		$this->_gateway = new EEG_Interswitch_Offsite();
-		$this->_pretty_name = __("interswitch Offsite", 'event_espresso');
+		$this->_pretty_name = __("Interswitch Offsite", 'event_espresso');
 		parent::__construct($pm_instance);
 	}
 

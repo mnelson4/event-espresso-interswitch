@@ -63,12 +63,23 @@ class EE_PMT_Interswitch_Offsite extends EE_PMT_Base{
 	public function generate_new_settings_form() {
 		EE_Registry::instance()->load_helper('Template');
 		$form = new EE_Payment_Method_Form(array(
-			'extra_meta_inputs'=>array(				
-				'mockey'=>new EE_Text_Input(array(
-					'html_label_text'=>  sprintf(__("Login ID %s", "event_espresso"),  $this->get_help_tab_link() )
+			'extra_meta_inputs'=>array(			
+				'prod_id'=>new EE_Text_Input(array(
+					'html_label_text'=>  sprintf(__("Product ID", "event_espresso")),  
+					'html_help_text' => __( 'Enter you profuct ID as provided by interswitch', 'event_espresso'),
 				)),
-				
-				)));
+				'pay_item_id'=>new EE_Text_Input(array(
+					'html_label_text'=>  sprintf(__("Pay Item ID", "event_espresso")),  
+					'html_help_text' => __( 'Enter you pay item ID as provided by interswitch', 'event_espresso'),
+					
+				)),
+				'mac_key'=>new EE_Text_Input(array(
+					'html_label_text'=>  sprintf(__("Mac Key", "event_espresso")),  
+					'html_help_text' => __( 'Enter you mac key as provided by interswitch', 'event_espresso'),
+					
+				)),				
+				) 
+				));
 		return $form;
 	}
 

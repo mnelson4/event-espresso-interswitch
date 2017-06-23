@@ -14,7 +14,7 @@ if (!defined('EVENT_ESPRESSO_VERSION')) {
  *
  * @package			Event Espresso
  * @subpackage
- * @author				Seyi Onifade
+ * @author				Mike Nelson
  *
  */
 class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
@@ -25,26 +25,25 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	 * @var array
 	 */
 	protected $_currencies_supported = EE_Gateway::all_currencies_supported;
-
+	
 	/**
 	 * Example of site's login ID
 	 * @var string
 	 */
-		
 	protected $_prod_id = null;
 	
 	protected $_pay_item_id = null;
 	
 	protected $_mac_key = null;
-
+	
 	/**
 	 * Whether we have configured the gateway integration object to use a separate IPN or not
 	 * @var boolean
 	 */
 	protected $_override_use_separate_IPN = null;
-
+	
 	/**
-	 * @return EEG_interswitch_Offsite
+	 * @return EEG_New_Payment_Method_Offsite
 	 */
 	public function __construct() {
 		//if the gateway you are integrating with sends a separate instant-payment-notification request
@@ -53,7 +52,7 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 		$this->set_uses_separate_IPN_request( false ) ;
 		parent::__construct();
 	}
-
+	
 	/**
 	 * Override's parent so this gateway integration class can act like one that uses
 	 * a separate IPN or not, depending on what is set in the payment methods settings form
@@ -62,7 +61,7 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	public function uses_separate_IPN_request() {
 		if( $this->_override_use_separate_IPN_request !== null ) {
 			$this->set_uses_separate_IPN_request( $this->_override_use_separate_IPN_request );
-		}
+		} 
 		return parent::uses_separate_IPN_request();
 	}
 
@@ -75,8 +74,7 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	 * @param type $transaction
 	 * @return EEI_Payment
 	 */
-	public function handle_payment_update($update_info, $transaction) {		
-		
+	public function handle_payment_update($update_info, $transaction) {
 		$payment = $this->_pay_model->get_payment_by_txn_id_chq_nmbr($update_info[ 'gateway_txn_id' ] );
 				
 		if(isset( $update_info[ 'resp' ] ) ){
@@ -104,16 +102,26 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 				$payment->set_gateway_response( __( 'Transaction failed: Something went wrong', 'event_espresso' ) );
 			}
 		}
-		
-		return $payment;		
-		
+		 
+		return $payment;
 	}
-
+	/**
+	 * Also sets the gateway url class variable based on whether debug mode is enabled or not
+	 * @param array $settings_array
+	 */
+	public function set_settings($settings_array){
+		parent::set_settings($settings_array);
+		$this->_gateway_url = $this->_debug_mode
+			? 'https://sandbox.interswitchng.com/collections/w/pay'
+			: 'https://sandbox.interswitchng.com/collections/w/pay';
+	}
+	
 	public function getHas($mac_key, $txn_ref, $prod_id, $pay_item_id, $amount, $return_url){
 		$hash_string = $txn_ref . $prod_id . $pay_item_id . $amount . $return_url . $mac_key;
 		$hash = hash('sha512', $hash_string); 
 		return $hash;
 	}
+
 	/**
 	 *
 	 * @param EEI_Payment $payment
@@ -122,6 +130,7 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	 * @param type $cancel_url
 	 */
 	public function set_redirection_info($payment, $billing_info = array(), $return_url = NULL, $notify_url = NULL, $cancel_url = NULL) {
+			
 		global $auto_made_thing_seed;
 		
 		if( empty( $auto_made_thing_seed ) ) {
@@ -160,7 +169,8 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 			'txn_ref' => $txn_ref,
 			'hash' => $hashed,
 		));
-		return $payment;
+		return $payment;		
+		
 	}
 }
 
