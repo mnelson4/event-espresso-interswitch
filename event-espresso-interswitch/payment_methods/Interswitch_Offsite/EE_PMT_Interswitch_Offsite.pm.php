@@ -78,10 +78,7 @@ class EE_PMT_Interswitch_Offsite extends EE_PMT_Base{
 					'html_help_text' => __( 'Enter you mac key as provided by interswitch', 'event_espresso'),
 					
 				)),
-				'override_use_separate_IPN_request' => new EE_Yes_No_Input( array(
-					'html_label_text' => __('Use Separate IPN', 'event_espresso'),
-					'html_help_text' => __( 'Instruct the gateway to send a separate IPN request, or send payment data back with the user upon return.', 'event_espresso' ),
-				))
+				
 				) 
 				));
 		return $form;

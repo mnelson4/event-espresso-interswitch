@@ -36,11 +36,7 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	
 	protected $_mac_key = null;
 	
-	/**
-	 * Whether we have configured the gateway integration object to use a separate IPN or not
-	 * @var boolean
-	 */
-	protected $_override_use_separate_IPN = null;
+	
 	
 	/**
 	 * @return EEG_New_Payment_Method_Offsite
@@ -49,22 +45,11 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 		//if the gateway you are integrating with sends a separate instant-payment-notification request
 		//(instead of sending payment information along with the user)
 		//set this to TRUE
-		$this->set_uses_separate_IPN_request( false ) ;
+		
 		parent::__construct();
 	}
 	
-	/**
-	 * Override's parent so this gateway integration class can act like one that uses
-	 * a separate IPN or not, depending on what is set in the payment methods settings form
-	 * @return boolean
-	 */
-	public function uses_separate_IPN_request() {
-		if( $this->_override_use_separate_IPN_request !== null ) {
-			$this->set_uses_separate_IPN_request( $this->_override_use_separate_IPN_request );
-		} 
-		return parent::uses_separate_IPN_request();
-	}
-
+	
 	/**
 	 *
 	 * @param arrat $update_info {
@@ -76,9 +61,10 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	 */
 	public function handle_payment_update($update_info, $transaction) {
 		$payment = $this->_pay_model->get_payment_by_txn_id_chq_nmbr($update_info[ 'gateway_txn_id' ] );
-				
+			
 		if(isset( $update_info[ 'resp' ] ) ){
 			if( $update_info[ 'resp' ] == 00 ){
+				$billing_info[ 'credit_card' ] = 1;	
 				$payment->set_status( $this->_pay_model->approved_status() );
 				$payment->set_gateway_response( __( 'Payment Approved', 'event_espresso' ));
 			}else if($update_info[ 'resp' ] == 33){
