@@ -56,11 +56,11 @@ class EEG_Interswitch_Offsite extends EE_Offsite_Gateway{
 	 *	@type string $gateway_txn_id
 	 *	@type string status an EEMI_Payment status
 	 * }
-	 * @param type $transaction
+	 * @param EEI_Transaction $transaction
 	 * @return EEI_Payment
 	 */
 	public function handle_payment_update($update_info, $transaction) {
-		$payment = $this->_pay_model->get_payment_by_txn_id_chq_nmbr($update_info[ 'gateway_txn_id' ] );
+		$payment = $transaction->last_payment();
 			
 		if(isset( $update_info[ 'resp' ] ) ){
 			if( $update_info[ 'resp' ] == 00 ){
